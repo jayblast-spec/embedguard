@@ -4,6 +4,8 @@
 [![npm](https://img.shields.io/npm/v/embedguard)](https://www.npmjs.com/package/embedguard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
+![How embedguard catches a silent embedding-model swap](./docs/banner.svg)
+
 **Catches silent embedding-model swaps under a vector index before they corrupt similarity search — dimension checks plus canary-probe drift detection, provider-agnostic.**
 
 ## The gap this fills
