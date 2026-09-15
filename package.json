@@ -1,0 +1,55 @@
+{
+  "name": "embedguard",
+  "version": "0.1.0",
+  "description": "Catches silent embedding-model swaps under a vector index before they corrupt similarity search -- dimension checks plus canary-probe drift detection, provider-agnostic.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build && npm run test"
+  },
+  "keywords": [
+    "embeddings",
+    "vector-database",
+    "rag",
+    "drift-detection",
+    "vector-search",
+    "similarity"
+  ],
+  "author": "jayblast-spec",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jayblast-spec/embedguard.git"
+  },
+  "homepage": "https://github.com/jayblast-spec/embedguard#readme",
+  "bugs": {
+    "url": "https://github.com/jayblast-spec/embedguard/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.1"
+  }
+}
