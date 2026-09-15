@@ -3,6 +3,7 @@
 [![CI](https://github.com/jayblast-spec/embedguard/actions/workflows/ci.yml/badge.svg)](https://github.com/jayblast-spec/embedguard/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/embedguard)](https://www.npmjs.com/package/embedguard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Docs](https://img.shields.io/badge/docs-embedguard.vercel.app-5eeab0)](https://embedguard.vercel.app)
 
 ![How embedguard catches a silent embedding-model swap](./docs/banner.svg)
 
