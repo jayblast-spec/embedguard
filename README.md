@@ -1,5 +1,9 @@
 # embedguard
 
+[![CI](https://github.com/jayblast-spec/embedguard/actions/workflows/ci.yml/badge.svg)](https://github.com/jayblast-spec/embedguard/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/embedguard)](https://www.npmjs.com/package/embedguard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 **Catches silent embedding-model swaps under a vector index before they corrupt similarity search — dimension checks plus canary-probe drift detection, provider-agnostic.**
 
 ## The gap this fills
