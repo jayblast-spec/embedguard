@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>embedguard</title>
+  <meta name="description" content="Catches silent embedding-model swaps under a vector index. Dimension checks plus canary-probe drift detection. Provider-agnostic.">
+  <!-- Published at /embedguard/. basePath and assetPrefix equivalent: /embedguard -->
+  <base href="/embedguard/">
+  <link rel="stylesheet" href="/embedguard/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="brand">ArkNet Digital</p>
+    <h1>embedguard</h1>
+    <p class="lede">Catches silent embedding-model swaps under a vector index before they corrupt similarity search. Dimension checks plus canary-probe drift detection. Provider-agnostic, with no runtime dependencies.</p>
+    <nav aria-label="On this page">
+      <a href="/embedguard/#what">What it does</a>
+      <a href="/embedguard/#install">Install</a>
+      <a href="/embedguard/#usage">Usage</a>
+      <a href="/embedguard/#links">Links</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="what">
+      <h2>What it does</h2>
+      <p>When the embedding model behind a vector index changes — a version bump, a provider switch, a chunking change — old vectors and new query vectors live in incompatible spaces. Similarity scores become meaningless, and nothing errors.</p>
+      <p>embedguard does not call an embedding provider. You bring vectors from the model you already use. It answers one question: is the model that produced this vector still the one this index was built with?</p>
+      <dl>
+        <dt><code>createFingerprint({ canaries, modelId? })</code></dt>
+        <dd>Builds a fingerprint from a handful of canary probes you embedded with the current model: their dimension, and the embeddings. Store it with the index metadata.</dd>
+        <dt><code>checkDimension(fingerprint, embedding)</code></dt>
+        <dd>Checks that a vector has the fingerprint's dimension. This catches an obviously different model immediately.</dd>
+        <dt><code>checkDrift(fingerprint, freshCanaries, { threshold? })</code></dt>
+        <dd>Catches a swap between models that share a dimension. Re-embed the fingerprint's exact probes and compare cosine similarity. A real swap shows up as a sharp drop.</dd>
+      </dl>
+    </section>
+
+    <section id="install">
+      <h2>Install</h2>
+      <pre><code>npm install embedguard</code></pre>
+      <p>Requires Node.js 20 or newer. The package has zero runtime dependencies.</p>
+    </section>
+
+    <section id="usage">
+      <h2>Usage</h2>
+      <pre><code>import { createFingerprint, checkDimension, checkDrift } from "embedguard";
+
+// Once, when you build the index — embed a few probes yourself.
+const fingerprint = createFingerprint({
+  modelId: "text-embedding-3-small",
+  canaries: [
+    { probe: "return policy", embedding: await embed("return policy") },
+    { probe: "shipping times", embedding: await embed("shipping times") },
+  ],
+});
+
+// Later, before trusting new vectors, or on a schedule:
+const freshCanaries = await Promise.all(
+  fingerprint.canaries.map(async (c) => ({
+    probe: c.probe,
+    embedding: await embed(c.probe),
+  }))
+);
+
+checkDimension(fingerprint, freshCanaries[0].embedding);
+
+const drift = checkDrift(fingerprint, freshCanaries);
+if (!drift.ok) {
+  throw new Error(
+    `embedding model drift detected: ${JSON.stringify(drift.probes)}`
+  );
+}</code></pre>
+      <p>The annotated demo simulates a same-dimension model swap that dimension checking alone would miss:</p>
+      <pre><code>npx tsx examples/demo.ts</code></pre>
+    </section>
+
+    <section id="links">
+      <h2>Links</h2>
+      <ul>
+        <li><a href="https://github.com/jayblast-spec/embedguard">Source repository</a></li>
+        <li><a href="https://www.npmjs.com/package/embedguard">Package on npm</a></li>
+        <li><a href="https://github.com/jayblast-spec/embedguard/blob/main/examples/demo.ts">Annotated demo</a></li>
+        <li><a href="https://github.com/jayblast-spec/embedguard/blob/main/LICENSE">MIT license</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built by <a href="https://github.com/jayblast-spec">ArkNet Digital</a>.</p>
+  </footer>
+</body>
+</html>
